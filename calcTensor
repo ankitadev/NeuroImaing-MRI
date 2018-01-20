@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun  5 23:05:43 2017
+
+@author: Sony Vaio
+"""
+import nibabel as nib
+import matplotlib.pyplot as plt
+import os
+from os.path import expanduser, join
+import nrrd
+
+home = expanduser('/rfanfs/pnl-zorro/home/ankita/DipyAnkita/harmonized0_')
+
+input = join(home, '600018902293_dwi_xc_Ed_rescaled.nhdr')
+
+output = join(home, '600018902293_dwi_xc_Ed_rescaled.nrrd')
+
+os.system('unu save -f nrrd -i '+input+' -o '+output)
+
+readdata, options = nrrd.read(output)
+print readdata.shape
+
+S_residual = S0.exp(.mod(tenfit))
+S0 = 
+b = 0
+tenfit = [(g.x)^2.D.xx+(g.y)^2.D.yy+(g.z)^2.D.zz+2.g.x.g.y.Dxy+2.g.x.g.z.D.x.z+2.g.y.g.z.D.y.z]
+S_tensor = S0.exp(-b.tenfit)
+meanRes = S_residual - S_tensor
+
+plt.plot(meanRes)
+plt.show()
