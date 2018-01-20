@@ -1,0 +1,70 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul  7 12:13:54 2017
+
+@author: ad8
+
+bvec correction, after conversion
+
+file dependencies:
+    - nii header (a 3d or 4d nrrd image)
+    - bvec
+"""
+import os
+import nrrd
+import argparse
+from os.path import abspath, exists
+from dipy.io.bvectxt import read_bvec_file
+
+def parse_file(nhdr_file,bvec_file,new_nhdr_file):
+
+    _, data_dict = nrrd.read(nhdr_file)
+
+    with open(nhdr_file, 'r') as read_file, open(new_nhdr_file, 'w') as write_new_file:
+
+        for line in read_file.readlines():
+            if 'DWMRI_gradient' not in line:
+                write_new_file.write(line)
+            else:
+                break
+
+        bvecs, __ = read_bvec_file(bvec_file)
+        bvecs = bvecs.T
+        length = len(bvecs)
+        
+        for i in range(0, length):
+            write_new_file.write('DWMRI_gradient_%04d:= ' % i)
+            for j in range(0, 3):
+                write_new_file.write("%.12f" % bvecs[i, j])
+                write_new_file.write(' ')
+            write_new_file.write('\n')
+        
+        for line in read_file.readlines():
+            if 'modality' in line:
+                write_new_file.write(line)
+            else:
+                break
+    
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i','--infile', help = 'name of the nhdr image')
+    parser.add_argument('-o','--outfile', help='name for the new nrrd image',
+                              required = False)
+    parser.add_argument('-ve','--bvec', help = 'name of the corresponding bvec file',
+                          required = False)
+    args = parser.parse_args()
+    
+    path_nhdr = abspath(args.infile)
+    path_bvec = abspath(args.bvec)
+    nm_output = abspath(args.outfile)
+
+    if not exists(path_nhdr):
+        print path_nhdr + ' doesn\'t exist'
+        return
+        
+    parse_file(path_nhdr,path_bvec,nm_output)
+    os.rename(nm_output,path_nhdr)
+    
+if __name__ == '__main__':
+    main()
