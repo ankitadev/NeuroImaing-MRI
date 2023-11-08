@@ -1,2 +1,2 @@
-# NeuroImaing-MRI
+# NeuroImaing-MRI Python Scripts
 Working with image files using Pyhon. Correcting bval, bvec of an MRI image renaming multiple files, delete multiple files using Python.
